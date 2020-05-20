@@ -1,24 +1,33 @@
-# Use deprecated VSTS Agent
-# More info here: https://github.com/microsoft/vsts-agent-docker/
-FROM mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-16.04-docker-18.06.1-ce-standard
+# https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/docker?view=azure-devops
 
-# Update packages
+FROM ubuntu:16.04
+
+# To make it easier for build and release pipelines to run apt-get,
+# configure apt to not require confirmation (assume the -y argument by default)
+ENV DEBIAN_FRONTEND=noninteractive
+RUN echo "APT::Get::Assume-Yes \"true\";" > /etc/apt/apt.conf.d/90assumeyes
+
 RUN apt-get update \
-    && apt-mark hold mysql-server \
-    && apt-mark hold mysql-server-5.7 \
-    && apt-get upgrade -y
+&& apt-get install -y --no-install-recommends \
+        ca-certificates \
+        curl \
+        jq \
+        git \
+        iputils-ping \
+        libcurl3 \
+        libicu55 \
+        libunwind8 \
+        wget \
+        netcat \
+        unzip \
+        build-essential \
+        ssh
 
-# Update azure-cli
+WORKDIR /azp
+
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 
-# Update powershell
-RUN wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb \
-    && dpkg -i packages-microsoft-prod.deb \
-    && apt-get update \
-    && apt-get install -y powershell
+COPY ./start.sh .
+RUN chmod +x start.sh
 
-# Cleanup
-RUN apt-get autoremove -y \
-    && apt-get autoclean -y\
-    && rm -rf /var/lib/apt/lists/* \
-    && rm -rf /etc/apt/sources.list.d/*
+CMD ["./start.sh"]

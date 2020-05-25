@@ -24,6 +24,13 @@ RUN apt-get update \
         ssh \
         mono-complete
 
+# Install docker for dind.
+RUN apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list > /etc/apt/sources.list.d/microsoft-prod.list
+RUN apt-get update
+RUN apt-get install -y moby-engine moby-cli
+
 WORKDIR /azp
 
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash

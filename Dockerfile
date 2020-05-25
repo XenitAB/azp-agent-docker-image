@@ -21,7 +21,8 @@ RUN apt-get update \
         netcat \
         unzip \
         build-essential \
-        ssh
+        ssh \
+        mono-complete
 
 WORKDIR /azp
 

@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/name: azure-devops-agents
+    name: azure-devops-agents
+  name: azure-devops-agents
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: azure-devops-agents
+      name: azure-devops-agents
+  serviceName: azure-devops-agents
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: azure-devops-agents
+        name: azure-devops-agents
+    spec:
+      containers:
+      - args: []
+        env:
+        - name: AZP_AGENT
+          value: $HOSTNAME
+        - name: AZP_POOL
+          value: my_agent_pool
+        - name: AZP_URL
+          value: https://dev.azure.com/my_org
+        - name: AZP_WORK
+          value: /workspace
+        envFrom:
+        - secretRef:
+            name: azure-devops-agents
+        image: quay.io/xenitab/azp-agent:ubuntu-16.04
+        imagePullPolicy: Always
+        name: azure-devops-agents
+        stdin: false
+        tty: false
+        volumeMounts: []
+      imagePullSecrets: []
+      initContainers: []
+      terminationGracePeriodSeconds: 30
+      volumes: []
+  updateStrategy:
+    rollingUpdate:
+      partition: 0
+    type: RollingUpdate
+  volumeClaimTemplates: []
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: azure-devops-agents
+stringData:
+   AZP_TOKEN: mySecretPatToken
+type: Opaque

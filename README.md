@@ -1,14 +1,9 @@
 # azp-agent-docker-image
 Azure Pipelines Docker Image
 
-Updates to the Microsoft (deprecated) container image: mcr.microsoft.com/azure-pipelines/vsts-agent:ubuntu-16.04-docker-18.06.1-ce-standard
+Current version: quay.io/xenitab/azp-agent:ubuntu-16.04
+Repository: https://quay.io/repository/xenitab/azp-agent?tab=info
 
-More info here: https://github.com/microsoft/vsts-agent-docker/
+## Getting started
 
-Image available here: https://quay.io/repository/xenitab/azp-agent?tab=info
-
-Pull image from: 
-
-```shell
-docker pull quay.io/xenitab/azp-agent
-```
+Modify the install.yaml file by replacing AZP_POOL, AZP_URL and AZP_TOKEN. Install into your choice of namespace in kubernetes.
